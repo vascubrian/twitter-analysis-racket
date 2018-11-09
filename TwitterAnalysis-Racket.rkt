@@ -32,7 +32,7 @@
             (string-downcase x))) #:websafe? #t))
        lst))
 
-;;; Read in the entire tweet database Daily Monitor Timeline (12 Months)
+;;; Read in the entire tweet database Daily Monitor Timeline  (3242) TWEETS
 
 (define tweets (string->jsexpr
                 (with-input-from-file "daily_monitor.json" (λ () (json-lines->json-array)))))
