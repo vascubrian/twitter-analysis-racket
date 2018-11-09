@@ -7,10 +7,8 @@
 (require racket/stream)
 
 
-;;; This function reads line-oriented JSON (as output by massmine),
-;;; and packages it into an array. For very large data sets, loading
-;;; everything into memory like this is heavy handed. For data this small,
-;;; working in memory is simpler
+;;; This function reads line-oriented JSON (as output by massmine),and packages it into an array. For very large data sets, loading
+;;; everything into memory like this is heavy handed. For data this small,working in memory is simpler
 
 (define (json-lines->json-array #:head [head #f])
   (let loop ([num 0]
@@ -39,18 +37,16 @@
 (define tweets (string->jsexpr
                 (with-input-from-file "daily_monitor.json" (λ () (json-lines->json-array)))))
 
-;; Remove just the tweet text and source from each tweet
-;;; hash. Finally, remove retweets.
-;;; Remove just the tweet text, source, and timestamp from each tweet
-;;; hash. Finally, remove retweets.
-(define t
-  (let ([tmp (map (λ (x) (list (hash-ref x 'text))) tweets)]) ;; improve to use streams
+;;t is a list of lists of strings. Tail recursion is used to extract each string and append
+;; it into one large string.
+
+(define list-string
+  (let ([tmp (map (λ (x) (list (hash-ref x 'full_text))) tweets)]) ;; improve to use streams
     (filter (λ (x) (not (string-prefix? (first x) "RT"))) tmp)
 
     ))
 
-;;t is a list of lists of strings. Tail recursion is used to extract each string and append
-;; it into one large string.
+; Joining tweets and arranging tweets to their systematic flow in and out.
 
 (define joined-tweets
     (local[
@@ -59,7 +55,7 @@
                    [else (joined1 (rest tlist1) (string-join (list acc "\n " (first(first tlist1)))))]
                    )
              )
-           ](joined1 t "")) )
+           ](joined1 list-string "")) )
 
 ;;; To begin our sentiment analysis, we extract each unique word
 ;;; and the number of times it occurred in the document
@@ -90,5 +86,5 @@
 	    #:y-label "Number Of Tweets"
             #:width 900
  	    #:height 500
-            #:title "ANALYSE THE MOOD OF TWEETS (Daily Monitor Timeline)" 
+            #:title "ANALYSE THE MOOD OF TWEETS OF DAILY MONITOR TIMELINE (3242) TWEETS" 
           )))
