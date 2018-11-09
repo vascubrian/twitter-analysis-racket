@@ -34,10 +34,10 @@
             (string-downcase x))) #:websafe? #t))
        lst))
 
-;;; Read in the entire tweet database (3200 tweets from Trump's timeline)
+;;; Read in the entire tweet database Daily Monitor Timeline (12 Months)
 
 (define tweets (string->jsexpr
-                (with-input-from-file "trump_tweets.json" (λ () (json-lines->json-array)))))
+                (with-input-from-file "daily_monitor.json" (λ () (json-lines->json-array)))))
 
 ;; Remove just the tweet text and source from each tweet
 ;;; hash. Finally, remove retweets.
@@ -90,5 +90,5 @@
 	    #:y-label "Number Of Tweets"
             #:width 900
  	    #:height 500
-            #:title "ANALYSE THE MOOD OF TWEETS (#NBSKACHUP)" 
+            #:title "ANALYSE THE MOOD OF TWEETS (Daily Monitor Timeline)" 
           )))
